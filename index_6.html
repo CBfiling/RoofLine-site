@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoofLine — Know Your Roof Cost Before You Call Anyone</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='5' fill='%23EDEBE4'/%3E%3Cpath d='M4 16L14 6L24 16' stroke='%239C3B26' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M8 16V22H20V16' stroke='%231A2129' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1A2129;
+    --ink-soft:#4B5560;
+    --stone:#EDEBE4;
+    --stone-deep:#E2DFD5;
+    --paper:#F7F5F0;
+    --line:#D8D4C8;
+    --brick:#9C3B26;
+    --brick-deep:#7C2E1D;
+    --patina:#4C6B5A;
+    --patina-soft:#E4EAE5;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--stone);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .display{font-family:'Space Grotesk',sans-serif;}
+
+  a{color:inherit;}
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:24px 32px;
+    max-width:1180px;
+    margin:0 auto;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:19px;
+    letter-spacing:-0.01em;
+  }
+  .logo-mark{
+    width:28px;height:28px;flex-shrink:0;
+  }
+  .header-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    letter-spacing:0.02em;
+  }
+
+  /* ---------- Hero / Tool ---------- */
+  .hero{
+    max-width:1180px;
+    margin:0 auto;
+    padding:12px 32px 80px;
+  }
+  .hero-head{
+    max-width:640px;
+    margin-bottom:40px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--brick);
+    margin-bottom:14px;
+    display:block;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:44px;
+    line-height:1.08;
+    font-weight:700;
+    margin:0 0 16px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{
+    font-style:normal;
+    color:var(--brick);
+  }
+  .hero-sub{
+    font-size:17px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:520px;
+  }
+
+  .tool-grid{
+    display:grid;
+    grid-template-columns:1fr 380px;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width: 880px){
+    .tool-grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- Form panel ---------- */
+  .panel{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:32px;
+  }
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:18px;
+  }
+  .field{
+    margin-bottom:18px;
+  }
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  input[type="text"], input[type="number"], select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--white);
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    transition:border-color .15s ease;
+  }
+  input[type="number"]{
+    font-family:'IBM Plex Mono',monospace;
+  }
+  input:focus, select:focus{
+    outline:none;
+    border-color:var(--brick);
+    box-shadow:0 0 0 3px rgba(156,59,38,0.1);
+  }
+  select{appearance:none;cursor:pointer;}
+
+  .pitch-options, .layer-options{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    padding:9px 14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--white);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    transition:all .12s ease;
+    user-select:none;
+  }
+  .chip:hover{border-color:var(--ink-soft);}
+  .chip.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:var(--white);
+  }
+
+  .calc-btn{
+    width:100%;
+    margin-top:8px;
+    padding:15px;
+    background:var(--brick);
+    color:var(--white);
+    border:none;
+    border-radius:3px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .calc-btn:hover{background:var(--brick-deep);}
+
+  /* ---------- Blueprint signature element ---------- */
+  .blueprint-wrap{
+    background:var(--ink);
+    border-radius:4px;
+    padding:28px 24px;
+    position:sticky;
+    top:24px;
+  }
+  .blueprint-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#8A9199;
+    margin-bottom:16px;
+  }
+  svg#roofSVG{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .blueprint-readout{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid #333B44;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:#B8BEC4;
+  }
+  .blueprint-readout span.val{
+    color:var(--white);
+    display:block;
+    font-size:14px;
+    margin-top:2px;
+  }
+
+  /* ---------- Result ---------- */
+  .result{
+    display:none;
+    margin-top:28px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .result.show{display:block;}
+  .result-head{
+    background:var(--ink);
+    color:var(--white);
+    padding:26px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .result-head-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#9BA3AB;
+    margin-bottom:6px;
+  }
+  .result-range{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:36px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+  }
+  .result-mid{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--patina);
+    background:var(--patina-soft);
+    padding:6px 12px;
+    border-radius:3px;
+  }
+  .breakdown{
+    background:var(--paper);
+    padding:24px 32px 8px;
+  }
+  .breakdown-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .breakdown-row:last-child{border-bottom:none;}
+  .breakdown-row .label-text{color:var(--ink-soft);}
+  .breakdown-row .amt{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+  .disclaimer{
+    padding:18px 32px 26px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    background:var(--paper);
+  }
+
+  /* ---------- Lead capture ---------- */
+  .lead-capture{
+    display:none;
+    margin-top:0;
+    background:var(--patina-soft);
+    border-top:1px solid var(--line);
+    padding:26px 32px 30px;
+  }
+  .lead-capture.show{display:block;}
+  .lead-capture h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:18px;
+    margin:0 0 6px;
+  }
+  .lead-capture p{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+    max-width:460px;
+    line-height:1.5;
+  }
+  .lead-form{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr auto;
+    gap:10px;
+  }
+  @media (max-width:700px){
+    .lead-form{grid-template-columns:1fr;}
+  }
+  .lead-form input{
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    background:var(--white);
+  }
+  .lead-form input:focus{outline:none;border-color:var(--patina);}
+  .lead-submit{
+    background:var(--patina);
+    color:var(--white);
+    border:none;
+    border-radius:3px;
+    padding:12px 20px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .lead-submit:hover{background:#3B5548;}
+  .lead-success{
+    display:none;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--patina);
+    padding:12px 0 0;
+  }
+  .lead-success.show{display:block;}
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:40px 32px 60px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg class="logo-mark" viewBox="0 0 28 28" fill="none">
+      <path d="M2 16L14 5L26 16" stroke="#9C3B26" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 16V23H22V16" stroke="#1A2129" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    RoofLine
+  </div>
+  <div class="header-tag">FREE ESTIMATE · NO CALL REQUIRED</div>
+</header>
+
+<div class="hero">
+  <div class="hero-head">
+    <span class="eyebrow">Roof Replacement Estimator</span>
+    <h1>Know what your roof <em>should</em> cost —<br>before a contractor tells you.</h1>
+    <p class="hero-sub">Enter your roof's specs and get a real cost range in under a minute. No phone number, no sales call, no obligation.</p>
+  </div>
+
+  <div class="tool-grid">
+    <div class="panel">
+      <div class="field-row">
+        <div class="field">
+          <label for="zip">ZIP Code</label>
+          <input type="text" id="zip" placeholder="e.g. 15427" maxlength="5" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="sqft">Roof Size (sq ft)</label>
+          <input type="number" id="sqft" placeholder="e.g. 1800" min="200" step="50">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="material">Material</label>
+        <select id="material">
+          <option value="asphalt3">Asphalt — 3-Tab</option>
+          <option value="asphaltarch" selected>Asphalt — Architectural</option>
+          <option value="metal">Metal (Standing Seam)</option>
+          <option value="tile">Clay / Concrete Tile</option>
+          <option value="wood">Wood Shake</option>
+          <option value="slate">Natural Slate</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Roof Pitch</label>
+        <div class="pitch-options" id="pitchGroup">
+          <div class="chip" data-val="1.0">Low (flat–3/12)</div>
+          <div class="chip active" data-val="1.15">Medium (4/12–6/12)</div>
+          <div class="chip" data-val="1.35">Steep (7/12–9/12)</div>
+          <div class="chip" data-val="1.6">Very Steep (10/12+)</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Layers to Tear Off</label>
+        <div class="layer-options" id="layerGroup">
+          <div class="chip active" data-val="0">None (new deck)</div>
+          <div class="chip" data-val="1">1 layer</div>
+          <div class="chip" data-val="2">2 layers</div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculate()">Get My Estimate</button>
+    </div>
+
+    <div class="blueprint-wrap">
+      <div class="blueprint-label">Live Blueprint</div>
+      <svg id="roofSVG" viewBox="0 0 320 200">
+        <!-- drawn dynamically -->
+      </svg>
+      <div class="blueprint-readout">
+        <div>Size <span class="val mono" id="readSize">— sq ft</span></div>
+        <div>Pitch <span class="val mono" id="readPitch">Medium</span></div>
+        <div>Material <span class="val mono" id="readMaterial">Architectural</span></div>
+        <div>Tear-off <span class="val mono" id="readLayers">None</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result" id="resultBox">
+    <div class="result-head">
+      <div>
+        <div class="result-head-label">Estimated Total Cost</div>
+        <div class="result-range mono" id="rangeOut">$0 – $0</div>
+      </div>
+      <div class="result-mid mono" id="midOut">MID-POINT: $0</div>
+    </div>
+    <div class="breakdown" id="breakdownOut"></div>
+    <div class="disclaimer">This is a data-driven estimate based on regional material and labor averages, not a formal quote. Actual pricing varies by structural condition, local permit fees, and contractor overhead. Get 2–3 quotes before you sign anything.</div>
+
+    <div class="lead-capture" id="leadCapture">
+      <h3>Want this priced exactly, by someone local?</h3>
+      <p>We'll pass your estimate to up to 3 vetted roofers in your area. No spam calls — they'll follow up by whatever method you choose below.</p>
+      <form class="lead-form" id="leadForm">
+        <input type="text" name="name" id="leadName" placeholder="Name" required>
+        <input type="email" name="email" id="leadEmail" placeholder="Email" required>
+        <input type="text" name="phone" id="leadPhone" placeholder="Phone (optional)">
+        <input type="hidden" name="estimate" id="leadEstimate">
+        <input type="hidden" name="zip" id="leadZip">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+        <button class="lead-submit" type="submit">Get Matched</button>
+      </form>
+      <div class="lead-success" id="leadSuccess">✓ Got it — we'll be in touch shortly.</div>
+      <div class="lead-error" id="leadError" style="display:none;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#9C3B26;padding:12px 0 0;">Something went wrong — try again in a moment.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  RoofLine provides cost estimates for informational purposes based on aggregated regional pricing data. It is not a contractor, engineer, or licensed appraiser, and estimates should not be treated as a binding quote.
+</footer>
+
+<script>
+/* ============ PRICING MODEL ============
+   Every constant below is editable — this is the whole business's pricing logic,
+   kept in one place so it's easy to tune against real quotes over time. */
+
+const MATERIAL_RATES = {
+  // dollars per sq ft, installed, national baseline (mid-market labor + material)
+  asphalt3:     { low: 4.25, high: 6.00,  name: "Asphalt — 3-Tab" },
+  asphaltarch:  { low: 5.50, high: 8.50,  name: "Asphalt — Architectural" },
+  metal:        { low: 9.50, high: 16.00, name: "Metal (Standing Seam)" },
+  tile:         { low: 12.00, high: 22.00, name: "Clay / Concrete Tile" },
+  wood:         { low: 10.50, high: 17.50, name: "Wood Shake" },
+  slate:        { low: 18.00, high: 35.00, name: "Natural Slate" }
+};
+
+// Regional cost multiplier by ZIP prefix (first digit) — rough national bands.
+// Replace with a real ZIP-to-region lookup or API later; this is a placeholder
+// structure that's already wired into the math.
+const ZIP_MULTIPLIER = {
+  "0": 1.18, "1": 1.15, "2": 1.05, "3": 0.92, "4": 0.95,
+  "5": 0.90, "6": 0.93, "7": 0.88, "8": 0.97, "9": 1.20
+};
+
+const TEARDOFF_PER_LAYER_PER_SQFT = 0.85; // labor + dumpster cost per layer
+const DISPOSAL_FLAT_FEE = 350;             // dumpster + haul-away
+const PERMIT_FLAT_FEE = 275;               // average municipal permit
+
+let selectedPitch = 1.15;
+let selectedLayers = 0;
+
+function setupChipGroup(groupId, onSelect){
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      onSelect(parseFloat(chip.dataset.val), chip.textContent.trim());
+      drawBlueprint();
+    });
+  });
+}
+setupChipGroup('pitchGroup', (val, label)=>{ selectedPitch = val; document.getElementById('readPitch').textContent = label; });
+setupChipGroup('layerGroup', (val, label)=>{ selectedLayers = val; document.getElementById('readLayers').textContent = label; });
+
+document.getElementById('sqft').addEventListener('input', drawBlueprint);
+document.getElementById('material').addEventListener('change', ()=>{
+  const m = document.getElementById('material');
+  document.getElementById('readMaterial').textContent = MATERIAL_RATES[m.value].name;
+  drawBlueprint();
+});
+
+function getZipMultiplier(zip){
+  if(!zip || zip.length < 1) return 1.0;
+  const digit = zip.charAt(0);
+  return ZIP_MULTIPLIER[digit] || 1.0;
+}
+
+function calculate(){
+  const zip = document.getElementById('zip').value.trim();
+  const sqft = parseFloat(document.getElementById('sqft').value) || 0;
+  const materialKey = document.getElementById('material').value;
+  const material = MATERIAL_RATES[materialKey];
+
+  if(sqft < 200){
+    alert("Enter your roof size in square feet (usually 1,400–2,800 for an average home).");
+    return;
+  }
+
+  const regionMult = getZipMultiplier(zip);
+
+  const materialLaborLow  = sqft * material.low  * selectedPitch * regionMult;
+  const materialLaborHigh = sqft * material.high * selectedPitch * regionMult;
+
+  const tearOff = selectedLayers > 0 ? (sqft * TEARDOFF_PER_LAYER_PER_SQFT * selectedLayers * regionMult) : 0;
+  const disposal = selectedLayers > 0 ? DISPOSAL_FLAT_FEE : 0;
+  const permit = PERMIT_FLAT_FEE;
+
+  const totalLow  = materialLaborLow  + tearOff + disposal + permit;
+  const totalHigh = materialLaborHigh + tearOff + disposal + permit;
+  const mid = (totalLow + totalHigh) / 2;
+
+  document.getElementById('rangeOut').textContent =
+    `$${Math.round(totalLow).toLocaleString()} – $${Math.round(totalHigh).toLocaleString()}`;
+  document.getElementById('midOut').textContent = `MID-POINT: $${Math.round(mid).toLocaleString()}`;
+
+  const breakdown = document.getElementById('breakdownOut');
+  breakdown.innerHTML = `
+    <div class="breakdown-row"><span class="label-text">Materials & installation (${material.name}, ${sqft.toLocaleString()} sq ft)</span><span class="amt">$${Math.round(materialLaborLow).toLocaleString()} – $${Math.round(materialLaborHigh).toLocaleString()}</span></div>
+    ${selectedLayers > 0 ? `<div class="breakdown-row"><span class="label-text">Tear-off (${selectedLayers} layer${selectedLayers>1?'s':''})</span><span class="amt">$${Math.round(tearOff).toLocaleString()}</span></div>
+    <div class="breakdown-row"><span class="label-text">Disposal & dumpster</span><span class="amt">$${disposal.toLocaleString()}</span></div>` : ''}
+    <div class="breakdown-row"><span class="label-text">Permit fee (estimated)</span><span class="amt">$${permit.toLocaleString()}</span></div>
+    <div class="breakdown-row"><span class="label-text">Regional cost adjustment</span><span class="amt">${regionMult}×</span></div>
+  `;
+
+  document.getElementById('resultBox').classList.add('show');
+  document.getElementById('leadCapture').classList.add('show');
+  document.getElementById('resultBox').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ===== Formspree endpoint =====
+// Replace YOUR_FORM_ID below with the ID from your Formspree form
+// (Formspree dashboard -> your form -> shows a URL like
+//  https://formspree.io/f/abcd1234 -- copy just the "abcd1234" part,
+//  or paste the whole URL here).
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+
+document.getElementById('leadForm').addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const name = document.getElementById('leadName').value.trim();
+  const email = document.getElementById('leadEmail').value.trim();
+  if(!name || !email){
+    alert("Enter at least your name and email so a local roofer can follow up.");
+    return;
+  }
+
+  // Attach the estimate + zip so the email you get has useful context
+  document.getElementById('leadEstimate').value = document.getElementById('rangeOut').textContent;
+  document.getElementById('leadZip').value = document.getElementById('zip').value.trim();
+
+  const form = document.getElementById('leadForm');
+  const data = new FormData(form);
+  const successEl = document.getElementById('leadSuccess');
+  const errorEl = document.getElementById('leadError');
+  const submitBtn = form.querySelector('.lead-submit');
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Sending…";
+  errorEl.style.display = "none";
+
+  fetch(FORMSPREE_ENDPOINT, {
+    method: "POST",
+    body: data,
+    headers: { "Accept": "application/json" }
+  })
+  .then(response => {
+    if(response.ok){
+      successEl.classList.add('show');
+      form.style.display = "none";
+    } else {
+      errorEl.style.display = "block";
+    }
+  })
+  .catch(() => {
+    errorEl.style.display = "block";
+  })
+  .finally(() => {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Get Matched";
+  });
+});
+
+/* ============ LIVE BLUEPRINT SVG ============ */
+function drawBlueprint(){
+  const sqft = parseFloat(document.getElementById('sqft').value) || 1800;
+  const svg = document.getElementById('roofSVG');
+  document.getElementById('readSize').textContent = `${sqft.toLocaleString()} sq ft`;
+
+  // Map pitch to visual roof angle, layers to a stacked-line thickness
+  const pitchHeight = { 1.0: 22, 1.15: 42, 1.35: 62, 1.6: 82 }[selectedPitch] || 42;
+  const spanWidth = Math.min(260, 140 + sqft/40);
+  const cx = 160, baseY = 150;
+  const leftX = cx - spanWidth/2, rightX = cx + spanWidth/2;
+  const peakY = baseY - pitchHeight;
+
+  const layerLines = [];
+  for(let i=0;i<selectedLayers;i++){
+    const off = 8 + i*6;
+    layerLines.push(`<line x1="${leftX-off}" y1="${baseY+off}" x2="${cx}" y2="${peakY+off*0.3}" stroke="#5A6470" stroke-width="1" stroke-dasharray="3 3"/>`);
+    layerLines.push(`<line x1="${cx}" y1="${peakY+off*0.3}" x2="${rightX+off}" y2="${baseY+off}" stroke="#5A6470" stroke-width="1" stroke-dasharray="3 3"/>`);
+  }
+
+  svg.innerHTML = `
+    <line x1="20" y1="${baseY}" x2="300" y2="${baseY}" stroke="#333B44" stroke-width="1"/>
+    ${layerLines.join('')}
+    <polyline points="${leftX},${baseY} ${cx},${peakY} ${rightX},${baseY}" fill="none" stroke="#9C3B26" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <line x1="${leftX}" y1="${baseY}" x2="${leftX}" y2="${baseY+18}" stroke="#5A6470" stroke-width="2"/>
+    <line x1="${rightX}" y1="${baseY}" x2="${rightX}" y2="${baseY+18}" stroke="#5A6470" stroke-width="2"/>
+    <text x="${cx}" y="${peakY-12}" text-anchor="middle" fill="#8A9199" font-family="IBM Plex Mono, monospace" font-size="11">${sqft.toLocaleString()} sq ft</text>
+    <circle cx="${cx}" cy="${peakY}" r="3" fill="#9C3B26"/>
+  `;
+}
+drawBlueprint();
+</script>
+
+</body>
+</html>
